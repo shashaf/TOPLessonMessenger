@@ -1,15 +1,15 @@
-using System.Net;
+п»їusing System.Net;
 using System.Net.Sockets;
 using System.Text;
 
 namespace MessengerServer
 {
-    public partial class Form1 : Form
+    public partial class ServerForm : Form
     {
         TcpListener server;
         List<TcpClient> clients = new List<TcpClient>();
         bool isRunning = false;
-        public Form1()
+        public ServerForm()
         {
             InitializeComponent();
         }
@@ -21,33 +21,88 @@ namespace MessengerServer
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            if (isRunning) return;
+            if (!isRunning)
+                StartServer();
+            else
+                StopServer();
+        }
 
+        void StartServer()
+        {
             server = new TcpListener(IPAddress.Any, 5000);
             server.Start();
             isRunning = true;
 
-            Log("Сервер запущен на порту 5000");
+            runButton.Text = "РћСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРµСЂРІРµСЂ";
+            Log("РЎРµСЂРІРµСЂ Р·Р°РїСѓС‰РµРЅ РЅР° РїРѕСЂС‚Сѓ 5000");
 
             Thread acceptThread = new Thread(AcceptClients);
+            acceptThread.IsBackground = true;
             acceptThread.Start();
         }
 
+        void StopServer()
+        {
+            isRunning = false;
+
+            try
+            {
+                server.Stop(); 
+            }
+            catch { }
+
+            lock (clients)
+            {
+
+                foreach (var client in clients)
+                {
+                    try
+                    {
+                        client.Close();
+                    }
+                    catch { }
+                }
+                clients.Clear();
+            }
+
+            runButton.Text = "Р—Р°РїСѓСЃС‚РёС‚СЊ СЃРµСЂРІРµСЂ";
+            Log("РЎРµСЂРІРµСЂ РѕСЃС‚Р°РЅРѕРІР»РµРЅ");
+        }
+
+
+
         void AcceptClients()
         {
-            while (isRunning)
+            try
             {
-                TcpClient client = server.AcceptTcpClient();
-                clients.Add(client);
+                while (isRunning)
+                {
+                    TcpClient client = server.AcceptTcpClient();
+                    
+                    var stream = client.GetStream();
+                    var reader = new StreamReader(stream, Encoding.UTF8);
+                    var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
-                Log("Подключился клиент");
+                    string clientName = reader.ReadLine();
 
-                Thread clientThread = new Thread(() => HandleClient(client));
-                clientThread.Start();
+                    lock (clients)
+                        clients.Add(client);
+
+                    Log($"РџРѕРґРєР»СЋС‡РёР»СЃСЏ РєР»РёРµРЅС‚ {clientName}");
+
+                    Thread clientThread = new Thread(() => HandleClient(client, clientName));
+                    //clientThread.IsBackground = true;
+                    clientThread.Start();
+                }
+            }
+            catch (SocketException)
+            {
+                // РќРѕСЂРјР°Р»СЊРЅР°СЏ СЃРёС‚СѓР°С†РёСЏ РїСЂРё server.Stop()
             }
         }
 
-        void HandleClient(TcpClient client)
+
+        void HandleClient(TcpClient client, string clientName)
         {
             try
             {
@@ -59,13 +114,13 @@ namespace MessengerServer
                     string message = reader.ReadLine();
                     if (message == null) break;
 
-                    Log("Сообщение: " + message);
-                    Broadcast(message);
+                    Log($"{clientName}: {message}");
+                    Broadcast($"{clientName}: {message}");
                 }
             }
             catch
             {
-                Log("Клиент отключился");
+                Log($"РљР»РёРµРЅС‚ {clientName} РѕС‚РєР»СЋС‡РёР»СЃСЏ");
             }
             finally
             {
@@ -101,5 +156,10 @@ namespace MessengerServer
             textBoxLog.AppendText(text + Environment.NewLine);
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (isRunning)
+                StopServer();
+        }
     }
 }
