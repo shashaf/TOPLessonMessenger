@@ -9,7 +9,7 @@ namespace MessengerClient
 {
     public partial class ClientForm : Form
     {
-        TcpClient client;
+        TcpClient client; 
         StreamReader reader;
         StreamWriter writer;
         Thread listenThread;
@@ -24,14 +24,14 @@ namespace MessengerClient
         {
             try
             {
-                string ip = textBoxIP.Text;
+                string ip = IPBox.Text;
                 client = new TcpClient(ip, 5000); // IP сервера
                 var stream = client.GetStream();
 
                 reader = new StreamReader(stream);
                 writer = new StreamWriter(stream) { AutoFlush = true };
 
-                // отправляем имя пользователя
+                // отправляем имя пользователя на сервер 
                 writer.WriteLine(nameBox.Text);
 
                 isConnected = true;
