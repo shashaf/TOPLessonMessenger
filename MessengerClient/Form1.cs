@@ -23,7 +23,8 @@ namespace MessengerClient
         {
             try
             {
-                client = new TcpClient("127.0.0.1", 5000); // IP сервера
+                string ip = textBoxIP.Text;
+                client = new TcpClient(ip, 5000); // IP сервера
                 var stream = client.GetStream();
 
                 reader = new StreamReader(stream);

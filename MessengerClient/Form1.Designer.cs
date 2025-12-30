@@ -33,6 +33,9 @@
             nameBox = new TextBox();
             connectButton = new Button();
             sendButton = new Button();
+            textBoxIP = new TextBox();
+            IPLabel = new Label();
+            nameLabel = new Label();
             SuspendLayout();
             // 
             // chatBox
@@ -60,7 +63,7 @@
             // 
             // connectButton
             // 
-            connectButton.Location = new Point(183, 19);
+            connectButton.Location = new Point(332, 20);
             connectButton.Name = "connectButton";
             connectButton.Size = new Size(137, 29);
             connectButton.TabIndex = 3;
@@ -78,11 +81,39 @@
             sendButton.UseVisualStyleBackColor = true;
             sendButton.Click += sendButton_Click;
             // 
+            // textBoxIP
+            // 
+            textBoxIP.Location = new Point(179, 21);
+            textBoxIP.Name = "textBoxIP";
+            textBoxIP.Size = new Size(125, 27);
+            textBoxIP.TabIndex = 5;
+            // 
+            // IPLabel
+            // 
+            IPLabel.AutoSize = true;
+            IPLabel.Location = new Point(204, 1);
+            IPLabel.Name = "IPLabel";
+            IPLabel.Size = new Size(65, 20);
+            IPLabel.TabIndex = 6;
+            IPLabel.Text = "IP адрес";
+            // 
+            // nameLabel
+            // 
+            nameLabel.AutoSize = true;
+            nameLabel.Location = new Point(51, 1);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(39, 20);
+            nameLabel.TabIndex = 6;
+            nameLabel.Text = "Имя";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(nameLabel);
+            Controls.Add(IPLabel);
+            Controls.Add(textBoxIP);
             Controls.Add(sendButton);
             Controls.Add(connectButton);
             Controls.Add(nameBox);
@@ -102,5 +133,8 @@
         private TextBox nameBox;
         private Button connectButton;
         private Button sendButton;
+        private TextBox textBoxIP;
+        private Label IPLabel;
+        private Label nameLabel;
     }
 }
