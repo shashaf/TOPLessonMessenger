@@ -1,6 +1,6 @@
 ﻿namespace MessengerClient
 {
-    partial class Form1
+    partial class ClientForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -106,7 +106,7 @@
             nameLabel.TabIndex = 6;
             nameLabel.Text = "Имя";
             // 
-            // Form1
+            // ClientForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -119,7 +119,7 @@
             Controls.Add(nameBox);
             Controls.Add(messageBox);
             Controls.Add(chatBox);
-            Name = "Form1";
+            Name = "ClientForm";
             Text = "Форма клиента";
             FormClosing += Form1_FormClosing;
             ResumeLayout(false);

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace MessengerClient
 {
-    public partial class Form1 : Form
+    public partial class ClientForm : Form
     {
         TcpClient client;
         StreamReader reader;
@@ -15,7 +15,7 @@ namespace MessengerClient
         Thread listenThread;
         bool isConnected = false;
 
-        public Form1()
+        public ClientForm()
         {
             InitializeComponent();
         }
@@ -40,7 +40,7 @@ namespace MessengerClient
                 listenThread.IsBackground = true;
                 listenThread.Start();
 
-                chatBox.AppendText("Подключено к серверу\n");
+                chatBox.AppendText($"Вы подключились под именем {nameBox.Text}{Environment.NewLine}");
             }
             catch
             {

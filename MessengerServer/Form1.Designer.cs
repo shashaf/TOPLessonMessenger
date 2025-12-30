@@ -1,6 +1,6 @@
 ﻿namespace MessengerServer
 {
-    partial class Form1
+    partial class ServerForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -50,14 +50,14 @@
             runButton.UseVisualStyleBackColor = true;
             runButton.Click += runButton_Click;
             // 
-            // Form1
+            // ServerForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(runButton);
             Controls.Add(textBoxLog);
-            Name = "Form1";
+            Name = "ServerForm";
             Text = "Форма сервера";
             FormClosing += Form1_FormClosing;
             ResumeLayout(false);

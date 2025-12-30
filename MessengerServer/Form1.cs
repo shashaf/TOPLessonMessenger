@@ -4,12 +4,12 @@ using System.Text;
 
 namespace MessengerServer
 {
-    public partial class Form1 : Form
+    public partial class ServerForm : Form
     {
         TcpListener server;
         List<TcpClient> clients = new List<TcpClient>();
         bool isRunning = false;
-        public Form1()
+        public ServerForm()
         {
             InitializeComponent();
         }
@@ -79,12 +79,18 @@ namespace MessengerServer
                 {
                     TcpClient client = server.AcceptTcpClient();
                     
+                    var stream = client.GetStream();
+                    var reader = new StreamReader(stream, Encoding.UTF8);
+                    var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
+
+                    string clientName = reader.ReadLine();
+
                     lock (clients)
                         clients.Add(client);
 
-                    Log("Подключился клиент");
+                    Log($"Подключился клиент {clientName}");
 
-                    Thread clientThread = new Thread(() => HandleClient(client));
+                    Thread clientThread = new Thread(() => HandleClient(client, clientName));
                     //clientThread.IsBackground = true;
                     clientThread.Start();
                 }
@@ -96,7 +102,7 @@ namespace MessengerServer
         }
 
 
-        void HandleClient(TcpClient client)
+        void HandleClient(TcpClient client, string clientName)
         {
             try
             {
@@ -108,13 +114,13 @@ namespace MessengerServer
                     string message = reader.ReadLine();
                     if (message == null) break;
 
-                    Log("Сообщение: " + message);
-                    Broadcast(message);
+                    Log($"{clientName}: {message}");
+                    Broadcast($"{clientName}: {message}");
                 }
             }
             catch
             {
-                Log("Клиент отключился");
+                Log($"Клиент {clientName} отключился");
             }
             finally
             {
