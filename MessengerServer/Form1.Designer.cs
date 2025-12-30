@@ -34,17 +34,17 @@
             // 
             // textBoxLog
             // 
-            textBoxLog.Location = new Point(543, 12);
+            textBoxLog.Location = new Point(12, 12);
             textBoxLog.Multiline = true;
             textBoxLog.Name = "textBoxLog";
-            textBoxLog.Size = new Size(224, 310);
+            textBoxLog.Size = new Size(755, 310);
             textBoxLog.TabIndex = 0;
             // 
             // runButton
             // 
-            runButton.Location = new Point(562, 351);
+            runButton.Location = new Point(288, 350);
             runButton.Name = "runButton";
-            runButton.Size = new Size(94, 29);
+            runButton.Size = new Size(205, 29);
             runButton.TabIndex = 1;
             runButton.Text = "Запустить сервер";
             runButton.UseVisualStyleBackColor = true;
@@ -58,7 +58,8 @@
             Controls.Add(runButton);
             Controls.Add(textBoxLog);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Форма сервера";
+            FormClosing += Form1_FormClosing;
             ResumeLayout(false);
             PerformLayout();
         }

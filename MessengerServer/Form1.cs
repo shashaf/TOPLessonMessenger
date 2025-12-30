@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -21,31 +21,80 @@ namespace MessengerServer
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            if (isRunning) return;
+            if (!isRunning)
+                StartServer();
+            else
+                StopServer();
+        }
 
+        void StartServer()
+        {
             server = new TcpListener(IPAddress.Any, 5000);
             server.Start();
             isRunning = true;
 
-            Log("������ ������� �� ����� 5000");
+            runButton.Text = "Остановить сервер";
+            Log("Сервер запущен на порту 5000");
 
             Thread acceptThread = new Thread(AcceptClients);
+            acceptThread.IsBackground = true;
             acceptThread.Start();
         }
 
+        void StopServer()
+        {
+            isRunning = false;
+
+            try
+            {
+                server.Stop(); 
+            }
+            catch { }
+
+            lock (clients)
+            {
+
+                foreach (var client in clients)
+                {
+                    try
+                    {
+                        client.Close();
+                    }
+                    catch { }
+                }
+                clients.Clear();
+            }
+
+            runButton.Text = "Запустить сервер";
+            Log("Сервер остановлен");
+        }
+
+
+
         void AcceptClients()
         {
-            while (isRunning)
+            try
             {
-                TcpClient client = server.AcceptTcpClient();
-                clients.Add(client);
+                while (isRunning)
+                {
+                    TcpClient client = server.AcceptTcpClient();
+                    
+                    lock (clients)
+                        clients.Add(client);
 
-                Log("����������� ������");
+                    Log("Подключился клиент");
 
-                Thread clientThread = new Thread(() => HandleClient(client));
-                clientThread.Start();
+                    Thread clientThread = new Thread(() => HandleClient(client));
+                    //clientThread.IsBackground = true;
+                    clientThread.Start();
+                }
+            }
+            catch (SocketException)
+            {
+                // Нормальная ситуация при server.Stop()
             }
         }
+
 
         void HandleClient(TcpClient client)
         {
@@ -59,13 +108,13 @@ namespace MessengerServer
                     string message = reader.ReadLine();
                     if (message == null) break;
 
-                    Log("���������: " + message);
+                    Log("Сообщение: " + message);
                     Broadcast(message);
                 }
             }
             catch
             {
-                Log("������ ����������");
+                Log("Клиент отключился");
             }
             finally
             {
@@ -101,5 +150,10 @@ namespace MessengerServer
             textBoxLog.AppendText(text + Environment.NewLine);
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (isRunning)
+                StopServer();
+        }
     }
 }

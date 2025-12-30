@@ -120,7 +120,7 @@
             Controls.Add(messageBox);
             Controls.Add(chatBox);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Форма клиента";
             FormClosing += Form1_FormClosing;
             ResumeLayout(false);
             PerformLayout();

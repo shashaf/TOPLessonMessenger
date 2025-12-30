@@ -13,6 +13,7 @@ namespace MessengerClient
         StreamReader reader;
         StreamWriter writer;
         Thread listenThread;
+        bool isConnected = false;
 
         public Form1()
         {
@@ -33,6 +34,8 @@ namespace MessengerClient
                 // отправляем имя пользователя
                 writer.WriteLine(nameBox.Text);
 
+                isConnected = true;
+
                 listenThread = new Thread(Listen);
                 listenThread.IsBackground = true;
                 listenThread.Start();
@@ -49,26 +52,38 @@ namespace MessengerClient
         {
             try
             {
-                while (true)
+                while (isConnected)
                 {
                     string message = reader.ReadLine();
+
+                    if (message == null)
+                        break;
+
                     Invoke(new Action(() =>
                     {
-                        chatBox.AppendText(message + "\n");
+                        chatBox.AppendText(message + Environment.NewLine);
                     }));
                 }
             }
             catch
             {
+                
+            }
+            finally 
+            {
                 Invoke(new Action(() =>
                 {
                     chatBox.AppendText("Соединение разорвано\n");
                 }));
+
+                isConnected = false;
             }
         }
 
         private void sendButton_Click(object sender, EventArgs e)
         {
+            if (!isConnected) return;
+
             if (!string.IsNullOrWhiteSpace(messageBox.Text))
             {
                 writer.WriteLine(messageBox.Text);
@@ -76,16 +91,19 @@ namespace MessengerClient
             }
         }
 
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            isConnected = false;
+
             try
             {
+                reader?.Close();
+                writer?.Close();
                 client?.Close();
-                listenThread?.Abort();
             }
             catch { }
-
-            base.OnFormClosing(e);
         }
+
     }
 }
