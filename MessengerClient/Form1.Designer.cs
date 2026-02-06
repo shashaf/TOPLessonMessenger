@@ -40,6 +40,7 @@
             // 
             // chatBox
             // 
+            chatBox.BackColor = SystemColors.Info;
             chatBox.Location = new Point(27, 50);
             chatBox.Margin = new Padding(3, 2, 3, 2);
             chatBox.Multiline = true;
@@ -49,6 +50,7 @@
             // 
             // messageBox
             // 
+            messageBox.BackColor = SystemColors.Info;
             messageBox.Location = new Point(27, 233);
             messageBox.Margin = new Padding(3, 2, 3, 2);
             messageBox.Multiline = true;
@@ -60,6 +62,7 @@
             // 
             // nameBox
             // 
+            nameBox.BackColor = SystemColors.Info;
             nameBox.Location = new Point(27, 16);
             nameBox.Margin = new Padding(3, 2, 3, 2);
             nameBox.Name = "nameBox";
@@ -68,10 +71,11 @@
             // 
             // connectButton
             // 
+            connectButton.Font = new Font("Times New Roman", 14F);
             connectButton.Location = new Point(290, 15);
             connectButton.Margin = new Padding(3, 2, 3, 2);
             connectButton.Name = "connectButton";
-            connectButton.Size = new Size(120, 22);
+            connectButton.Size = new Size(151, 31);
             connectButton.TabIndex = 3;
             connectButton.Text = "Подключиться";
             connectButton.UseVisualStyleBackColor = true;
@@ -79,10 +83,11 @@
             // 
             // sendButton
             // 
-            sendButton.Location = new Point(340, 242);
+            sendButton.Font = new Font("Times New Roman", 14F);
+            sendButton.Location = new Point(329, 237);
             sendButton.Margin = new Padding(3, 2, 3, 2);
             sendButton.Name = "sendButton";
-            sendButton.Size = new Size(82, 22);
+            sendButton.Size = new Size(154, 33);
             sendButton.TabIndex = 4;
             sendButton.Text = "Отправить";
             sendButton.UseVisualStyleBackColor = true;
@@ -90,6 +95,7 @@
             // 
             // IPBox
             // 
+            IPBox.BackColor = SystemColors.Info;
             IPBox.Location = new Point(157, 16);
             IPBox.Margin = new Padding(3, 2, 3, 2);
             IPBox.Name = "IPBox";
@@ -100,18 +106,20 @@
             // IPLabel
             // 
             IPLabel.AutoSize = true;
+            IPLabel.Font = new Font("Times New Roman", 9F);
             IPLabel.Location = new Point(178, 1);
             IPLabel.Name = "IPLabel";
-            IPLabel.Size = new Size(51, 15);
+            IPLabel.Size = new Size(49, 15);
             IPLabel.TabIndex = 6;
             IPLabel.Text = "IP адрес";
             // 
             // nameLabel
             // 
             nameLabel.AutoSize = true;
+            nameLabel.Font = new Font("Times New Roman", 9F);
             nameLabel.Location = new Point(45, 1);
             nameLabel.Name = "nameLabel";
-            nameLabel.Size = new Size(31, 15);
+            nameLabel.Size = new Size(29, 15);
             nameLabel.TabIndex = 6;
             nameLabel.Text = "Имя";
             // 
@@ -119,6 +127,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ActiveCaption;
             ClientSize = new Size(700, 338);
             Controls.Add(nameLabel);
             Controls.Add(IPLabel);
