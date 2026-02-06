@@ -8,15 +8,12 @@ namespace MessengerServer
     {
         TcpListener server;
         List<TcpClient> clients = new List<TcpClient>();
+        Dictionary<string, TcpClient> connectedClients = new Dictionary<string, TcpClient>();
+
         bool isRunning = false;
         public ServerForm()
         {
             InitializeComponent();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void runButton_Click(object sender, EventArgs e)
@@ -78,7 +75,28 @@ namespace MessengerServer
                 while (isRunning)
                 {
                     TcpClient client = server.AcceptTcpClient();
-                    
+                    IPEndPoint clientEndPoint = client.Client.RemoteEndPoint as IPEndPoint;
+                    string clientIP = clientEndPoint.Address.ToString();
+                    int clientPort = clientEndPoint.Port;
+
+                    string clientKey = $"{clientEndPoint.Address}:{clientEndPoint.Port}";
+
+                    lock (connectedClients)
+                    {
+                        if (connectedClients.ContainsKey(clientKey))
+                        {
+                            // Уже есть подключение с этого устройства
+                            using var tempWriter = new StreamWriter(client.GetStream()) { AutoFlush = true };
+                            tempWriter.WriteLine("Ошибка: с вашего устройства уже установлено соединение.");
+                            client.Close();
+                            continue;
+                        }
+
+                        connectedClients.Add(clientKey, client);
+                    }
+
+
+
                     var stream = client.GetStream();
                     var reader = new StreamReader(stream, Encoding.UTF8);
                     var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
@@ -90,7 +108,7 @@ namespace MessengerServer
 
                     Log($"Подключился клиент {clientName}");
 
-                    Thread clientThread = new Thread(() => HandleClient(client, clientName));
+                    Thread clientThread = new Thread(() => HandleClient(client, clientName, clientKey));
                     //clientThread.IsBackground = true;
                     clientThread.Start();
                 }
@@ -102,7 +120,7 @@ namespace MessengerServer
         }
 
 
-        void HandleClient(TcpClient client, string clientName)
+        void HandleClient(TcpClient client, string clientName, string clientKey)
         {
             try
             {
@@ -124,6 +142,9 @@ namespace MessengerServer
             }
             finally
             {
+                lock (connectedClients)
+                    connectedClients.Remove(clientKey);
+
                 clients.Remove(client);
                 client.Close();
             }
