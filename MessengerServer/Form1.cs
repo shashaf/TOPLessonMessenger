@@ -75,6 +75,7 @@ namespace MessengerServer
                 while (isRunning)
                 {
                     TcpClient client = server.AcceptTcpClient();
+                    // вот отсюда
                     IPEndPoint clientEndPoint = client.Client.RemoteEndPoint as IPEndPoint;
                     string clientIP = clientEndPoint.Address.ToString();
                     int clientPort = clientEndPoint.Port;
@@ -94,7 +95,7 @@ namespace MessengerServer
 
                         connectedClients.Add(clientKey, client);
                     }
-
+                    // досюда
 
 
                     var stream = client.GetStream();
@@ -109,7 +110,7 @@ namespace MessengerServer
                     Log($"Подключился клиент {clientName}");
 
                     Thread clientThread = new Thread(() => HandleClient(client, clientName, clientKey));
-                    //clientThread.IsBackground = true;
+                    clientThread.IsBackground = true;
                     clientThread.Start();
                 }
             }
@@ -132,7 +133,9 @@ namespace MessengerServer
                     string message = reader.ReadLine();
                     if (message == null) break;
 
-                    Log($"{clientName}: {message}");
+                    string formatted = message.Replace("<br>", Environment.NewLine);
+
+                    Log($"{clientName}: {formatted}");
                     Broadcast($"{clientName}: {message}");
                 }
             }
@@ -144,7 +147,7 @@ namespace MessengerServer
             {
                 lock (connectedClients)
                     connectedClients.Remove(clientKey);
-
+                
                 clients.Remove(client);
                 client.Close();
             }
