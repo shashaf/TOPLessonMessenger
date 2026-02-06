@@ -55,6 +55,8 @@
             messageBox.Name = "messageBox";
             messageBox.Size = new Size(292, 42);
             messageBox.TabIndex = 1;
+            messageBox.KeyDown += messageBox_KeyDown;
+            messageBox.KeyUp += messageBox_KeyUp;
             // 
             // nameBox
             // 
@@ -93,6 +95,7 @@
             IPBox.Name = "IPBox";
             IPBox.Size = new Size(110, 23);
             IPBox.TabIndex = 5;
+            IPBox.Text = "192.168.0.143";
             // 
             // IPLabel
             // 
